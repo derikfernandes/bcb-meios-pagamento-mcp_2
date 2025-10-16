@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: bcb-meios-pagamento-mcp
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:http
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production

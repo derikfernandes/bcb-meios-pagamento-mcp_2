@@ -30,9 +30,11 @@ npm run build
 
 ## 🔧 Configuração
 
-### Claude Desktop
+Este servidor oferece **duas formas de uso**:
 
-Adicione ao arquivo de configuração do Claude Desktop (`~/Library/Application Support/Claude/claude_desktop_config.json` no macOS ou `%APPDATA%/Claude/claude_desktop_config.json` no Windows):
+### Opção 1: Claude Desktop (Uso Local)
+
+Para uso local com Claude Desktop, adicione ao arquivo de configuração (`~/Library/Application Support/Claude/claude_desktop_config.json` no macOS ou `%APPDATA%/Claude/claude_desktop_config.json` no Windows):
 
 ```json
 {
@@ -45,13 +47,53 @@ Adicione ao arquivo de configuração do Claude Desktop (`~/Library/Application 
 }
 ```
 
-### ChatGPT (OpenAI)
+### Opção 2: ChatGPT (Servidor Remoto)
 
-Para usar com ChatGPT, você precisará configurar o servidor MCP através da interface do OpenAI seguindo a documentação oficial de MCP da OpenAI.
+ChatGPT requer que o servidor esteja hospedado com HTTPS. Siga estas etapas:
 
-### Outros LLMs
+#### Passo 1: Deploy do Servidor
 
-Este servidor segue o protocolo MCP padrão e é compatível com qualquer LLM que suporte o Model Context Protocol.
+Escolha uma opção de deployment:
+
+**Opção A - Render (Recomendado - Free Tier)**
+1. Crie uma conta em [render.com](https://render.com)
+2. Conecte seu repositório GitHub
+3. Use as configurações do arquivo `render.yaml` incluído
+4. Seu servidor estará disponível em `https://seu-app.onrender.com`
+
+**Opção B - Railway**
+1. Crie uma conta em [railway.app](https://railway.app)
+2. Faça deploy do repositório
+3. Use as configurações do arquivo `railway.json` incluído
+4. Seu servidor estará disponível em `https://seu-app.railway.app`
+
+**Opção C - ngrok (Desenvolvimento Local)**
+```bash
+# Terminal 1: Inicie o servidor HTTP
+npm run dev:http
+
+# Terminal 2: Exponha via ngrok
+ngrok http 3000
+```
+
+Consulte [DEPLOYMENT.md](./DEPLOYMENT.md) para guia completo de deployment.
+
+#### Passo 2: Configurar no ChatGPT
+
+1. Acesse ChatGPT com assinatura **Pro, Plus, Team, Education ou Enterprise**
+2. Ative o **Developer Mode**
+3. Adicione um novo MCP Server:
+   - **Nome**: BCB Meios de Pagamento
+   - **URL SSE**: `https://seu-servidor.com/sse`
+   - **Tipo**: Server-Sent Events (SSE)
+
+4. Teste perguntando: *"Quais foram os dados de PIX em dezembro de 2023?"*
+
+### Opção 3: Outros LLMs
+
+Este servidor segue o protocolo MCP padrão e é compatível com qualquer LLM que suporte:
+- **Modo Local**: Protocolo stdio (como Claude Desktop)
+- **Modo Remoto**: Protocolo SSE via HTTP/HTTPS (como ChatGPT)
 
 ## 🛠️ Ferramentas Disponíveis
 
@@ -184,6 +226,13 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull re
 
 Para dúvidas ou sugestões, abra uma issue no GitHub.
 
+## 📚 Documentação Adicional
+
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Guia completo de deployment para ChatGPT
+- [GUIA_CONFIGURACAO.md](./GUIA_CONFIGURACAO.md) - Configuração detalhada
+- [EXEMPLOS.md](./EXEMPLOS.md) - Exemplos de uso
+
 ## 🔄 Atualizações
 
 - v1.0.0 (2024): Versão inicial com 8 ferramentas principais
+- v1.1.0 (2025): Adicionado suporte para ChatGPT via HTTP/SSE
