@@ -2,6 +2,10 @@
 
 Servidor MCP (Model Context Protocol) para acessar os dados abertos de meios de pagamento do Banco Central do Brasil através de LLMs como Claude, ChatGPT e outros.
 
+<a href="https://glama.ai/mcp/servers/@derikfernandes/bcb-meios-pagamento-mcp_2">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@derikfernandes/bcb-meios-pagamento-mcp_2/badge" alt="BCB Payment Methods Server MCP server" />
+</a>
+
 ## 📋 Descrição
 
 Este servidor MCP fornece acesso programático à API de Dados Abertos de Meios de Pagamento do Banco Central do Brasil, permitindo que assistentes de IA consultem informações sobre:
