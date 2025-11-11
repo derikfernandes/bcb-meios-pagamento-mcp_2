@@ -78,16 +78,35 @@ ngrok http 3000
 
 Consulte [DEPLOYMENT.md](./DEPLOYMENT.md) para guia completo de deployment.
 
-#### Passo 2: Configurar no ChatGPT
+#### Passo 2: Configurar no ChatGPT/OpenAI
 
-1. Acesse ChatGPT com assinatura **Pro, Plus, Team, Education ou Enterprise**
-2. Ative o **Developer Mode**
-3. Adicione um novo MCP Server:
-   - **Nome**: BCB Meios de Pagamento
-   - **URL SSE**: `https://seu-servidor.com/sse`
-   - **Tipo**: Server-Sent Events (SSE)
+O servidor agora expõe endpoints REST compatíveis com a OpenAI MCP:
+
+**Endpoints Disponíveis:**
+- `GET /` - Informações do servidor
+- `GET /tools` - Lista todas as tools disponíveis
+- `POST /tools/call` - Executa uma tool
+- `GET /sse` - Endpoint SSE para clientes MCP padrão
+- `GET /health` - Health check
+- `GET /mcp/info` - Informações do servidor MCP
+
+**Configuração na OpenAI:**
+
+1. Acesse a plataforma OpenAI com uma conta que tenha acesso ao MCP
+2. Configure o servidor MCP com as seguintes informações:
+   - **URL Base**: `https://seu-servidor.com`
+   - **Endpoints**:
+     - Listar Tools: `GET /tools`
+     - Chamar Tool: `POST /tools/call`
+   - **Tipo**: HTTP REST API (MCP)
+
+3. A OpenAI descobrirá automaticamente as tools através do endpoint `/tools`
 
 4. Teste perguntando: *"Quais foram os dados de PIX em dezembro de 2023?"*
+
+**Nota:** Se a OpenAI não conseguir descobrir as tools automaticamente, você pode usar o endpoint SSE:
+   - **URL SSE**: `https://seu-servidor.com/sse`
+   - **Tipo**: Server-Sent Events (SSE)
 
 ### Opção 3: Outros LLMs
 
@@ -236,3 +255,4 @@ Para dúvidas ou sugestões, abra uma issue no GitHub.
 
 - v1.0.0 (2024): Versão inicial com 8 ferramentas principais
 - v1.1.0 (2025): Adicionado suporte para ChatGPT via HTTP/SSE
+- v1.2.0 (2025): Adicionados endpoints REST compatíveis com OpenAI MCP (`/tools`, `/tools/call`)
