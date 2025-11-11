@@ -836,12 +836,25 @@ async function main() {
     }
   });
 
+  const transports = new Map<string, SSEServerTransport>();
+
   // SSE endpoint para MCP (compatível com clientes MCP padrão)
   app.get('/sse', async (req, res) => {
     console.error('Nova conexão SSE estabelecida');
 
     const server = createMCPServer();
     const transport = new SSEServerTransport('/message', res);
+
+    const sessionId = transport.sessionId;
+    transports.set(sessionId, transport);
+
+    transport.onclose = () => {
+      transports.delete(sessionId);
+    };
+
+    req.on('close', () => {
+      transports.delete(sessionId);
+    });
 
     await server.connect(transport);
 
@@ -853,8 +866,29 @@ async function main() {
 
   // Endpoint para mensagens MCP
   app.post('/message', async (req, res) => {
-    // Este endpoint é usado pelo SSEServerTransport para receber mensagens
-    res.status(405).json({ error: 'Use SSE endpoint' });
+    const sessionId = req.query.sessionId;
+
+    if (typeof sessionId !== 'string') {
+      return res.status(400).json({ error: 'sessionId é obrigatório' });
+    }
+
+    const transport = transports.get(sessionId);
+
+    if (!transport) {
+      return res.status(410).json({ error: 'Sessão não encontrada' });
+    }
+
+    try {
+      await transport.handlePostMessage(req, res, req.body);
+    } catch (error) {
+      console.error('Erro ao processar mensagem MCP:', error);
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: 'Erro ao processar mensagem MCP',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
   });
 
   app.listen(PORT, () => {
